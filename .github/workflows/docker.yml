@@ -20,5 +20,7 @@ jobs:
         run: |
           docker run --name test-container log-monitor > output.txt 2>&1
 
-      - name: Show output
-        run: cat output.txt
+      - name: Check for ERROR
+        run: |
+           cat output.txt
+           grep ERROR output.txt && exit 1
