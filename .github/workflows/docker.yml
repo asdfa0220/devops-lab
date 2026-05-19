@@ -1,26 +1,31 @@
 
-name: CI - Docker Log Monitor
+name: DevOps Lab CI
 
 on:
   push:
-    branches: ["main"]
+    branches: [ main ]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: 1. Checkout code
+      uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -t log-monitor .
+    - name: 2. Build Docker image
+      run: docker build -t log-monitor .
 
-      - name: Run container
-        run: |
-          docker run --name test-container log-monitor > output.txt 2>&1
+    - name: 3. Run container and capture output
+      run: |
+        docker run log-monitor > output.txt
+        cat output.txt
 
-      - name: Check for ERROR
-        run: |
-           cat output.txt
-           grep ERROR output.txt && exit 1
+    - name: 4. Check ERROR
+      run: |
+        if grep "ERROR" output.txt; then
+          echo "❌ Found ERROR"
+          exit 1
+        else
+          echo "✅ No ERROR"
+        fi

@@ -1,12 +1,8 @@
 
-
 #!/bin/bash
 
-echo "Checking logs..."
+echo "INFO Start"
+echo "ERROR Something failed"
+echo "INFO End"
 
-grep ERROR app.log
-
-echo "Done"
-
-exit 0
 
