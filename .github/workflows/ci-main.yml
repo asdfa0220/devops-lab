@@ -1,0 +1,36 @@
+
+name: Main CI/CD
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 1. Checkout
+      uses: actions/checkout@v4
+
+    - name: 2. Build Docker Image (with version)
+      run: docker build -t log-monitor:${{ github.sha }} .
+
+    - name: 3. Run container
+      run: docker run log-monitor:${{ github.sha }} > output.txt
+
+    - name: 4. Show logs
+      run: cat output.txt
+
+    - name: 5. Check ERROR
+      run: |
+        if grep "ERROR" output.txt | grep -v "test"; then
+          echo "❌ Real ERROR found"
+          exit 1
+        else
+          echo "✅ OK"
+        fi
+
+    - name: 6. Simulate Deploy 🚀
+      if: success()
+      run: echo "Deploy success ✅"
