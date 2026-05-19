@@ -1,32 +1,29 @@
 
-name: DevOps Lab CI
+
+name: PR Test
 
 on:
-  push:
-    branches: [ main ]
+  pull_request:
 
 jobs:
-  build-test:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 1. Checkout code
+    - name: Checkout
       uses: actions/checkout@v4
 
-    - name: 2. Build Docker image
+    - name: Build
       run: docker build -t log-monitor .
 
-    - name: 3. Run container
+    - name: Run
       run: docker run log-monitor > output.txt
 
-    - name: 4. Show logs (debug用)
-      run: cat output.txt
-
-    - name: 5. Check real ERROR only
+    - name: Check ERROR
       run: |
         if grep "ERROR" output.txt | grep -v "test"; then
           echo "❌ Real ERROR found"
           exit 1
         else
-          echo "✅ Only test logs or no error"
+          echo "✅ OK"
         fi
